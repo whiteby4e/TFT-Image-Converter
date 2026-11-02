@@ -1,90 +1,105 @@
+<div align="center">
+
 # TFT Image Converter
 
-Convert images to RGB565 C/C++ arrays for storing in microcontroller flash memory and displaying on TFT screens.
+**Turn ordinary images into embedded display graphics.**
 
-## Features
+Convert PNG, JPEG, BMP, or WEBP images into compact RGB565 C/C++ arrays for TFT projects.
 
-* Converts common image formats such as PNG, JPG, JPEG, BMP, and WEBP
-* Resizes images to 128×160
-* Converts RGB888 images to RGB565
-* Generates a ready-to-use `image.h` C/C++ header file
-* Designed for ESP32 and other microcontroller-based TFT projects
-* No SD card is required for displaying the converted image
+![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Output](https://img.shields.io/badge/Output-RGB565-orange)
 
-## How It Works
+</div>
 
-The converter takes a regular image and processes it into raw RGB565 pixel data.
+---
+
+## ✨ Why use it?
+
+Microcontrollers often have limited storage and no filesystem available for image assets. TFT Image Converter prepares an image as a C/C++ header so it can be compiled directly into your firmware.
+
+## 🚀 Features
+
+- Supports PNG, JPG/JPEG, BMP, and WEBP.
+- Resizes images to **128 × 160**.
+- Converts RGB888 pixels to RGB565.
+- Generates an `image.h` header.
+- Includes dithering and image-adjustment settings in the converter.
+- Works on your PC; the generated header can be used by ESP32, ESP8266, Raspberry Pi Pico, and other compatible projects.
+
+## ⚡ Quick start
+
+### 1. Install
+
+Requirements: Python 3 and Pillow.
+
+```bash
+git clone https://github.com/whiteby4e/TFT-Image-Converter.git
+cd TFT-Image-Converter
+python -m pip install -r requirements.txt
+```
+
+### 2. Convert an image
+
+```bash
+python image_converter.py
+```
+
+Choose an image in the file dialog. The converter creates `image.h` in the project folder.
+
+### 3. Include it in your sketch
+
+```cpp
+#include "image.h"
+
+// Example for a compatible TFT_eSPI display:
+tft.pushImage(0, 0, TFT_IMAGE_WIDTH, TFT_IMAGE_HEIGHT, image);
+```
+
+See the included [Arduino example](examples/Arduino_Example) and [ESP32 example](examples/ESP32_Example).
+
+## 🧠 How conversion works
 
 ```text
-Input Image
+Input image
     ↓
-Resize to 128×160
+Crop or fit to 128 × 160
+    ↓
+Image adjustment / dithering
     ↓
 RGB888 → RGB565
     ↓
 Generate image.h
     ↓
-Store in microcontroller flash
+Compile into firmware flash
     ↓
-Display on TFT
+Draw on the TFT
 ```
 
-The generated `image.h` contains the image as a C/C++ array that can be included directly in an embedded project.
+A 128 × 160 RGB565 image contains 20,480 pixels and requires **40,960 bytes (40 KiB)** of raw pixel data, excluding small header and alignment overhead.
 
-## Example
+## 🖼️ Supported formats
 
-After converting an image, the program generates:
+| Format | Extensions |
+|---|---|
+| PNG | `.png` |
+| JPEG | `.jpg`, `.jpeg` |
+| Bitmap | `.bmp` |
+| WebP | `.webp` |
 
-```cpp
-#include "image.h"
+## 🔧 Customization
 
-tft.pushImage(0, 0, 128, 160, image);
-```
+The converter's image settings are defined near the top of `image_converter.py`, including target dimensions, saturation, contrast, brightness, dithering, and fit mode.
 
-The image data is stored directly in the microcontroller's program flash memory.
+The current output target is 128 × 160. If you change the dimensions, make sure your display code uses the matching generated width and height.
 
-A 128×160 RGB565 image requires:
+## 📁 Repository contents
 
-```text
-128 × 160 × 2 bytes = 40,960 bytes
-≈ 40 KB
-```
+- `image_converter.py` — desktop conversion tool.
+- `requirements.txt` — Python dependency list.
+- `examples/` — Arduino and ESP32 usage examples.
+- `examples/image.h` — sample generated image header.
 
-## Requirements
+## 📄 License
 
-* Python 3.x
-* Pillow
-
-Install Pillow with:
-
-```bash
-pip install Pillow
-```
-
-## Supported Input Formats
-
-* PNG
-* JPG / JPEG
-* BMP
-* WEBP
-
-## Hardware
-
-The generated image data can be used with microcontrollers such as:
-
-* ESP32
-* ESP8266
-* Raspberry Pi Pico
-* Other embedded systems with compatible TFT libraries
-
-The converter itself is hardware-independent; it only generates the image data.
-
-## License
-
-This project is licensed under the MIT License.
-
-## Author
-
-**WhiteByte**
-
-If you find this project useful, feel free to use it, modify it, or build something with it.
+MIT — see [LICENSE](LICENSE).
